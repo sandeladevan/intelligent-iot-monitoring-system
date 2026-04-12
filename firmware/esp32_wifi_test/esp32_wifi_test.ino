@@ -1,24 +1,46 @@
 #include <WiFi.h>
-#include "secrets.h"
+#include "secrets.h" //wifi credentials
 #include "DHT.h"
+#include <PubSubClient.h> // MQTT library
 
 // wifi config
 const char* ssid = WIFI_SSID;
 const char* password = WIFI_PASSWORD;
 
 // sensor config
-#define DHTPIN 4
-#define DHTTYPE DHT11
+#define DHTPIN 4 // GPIO connected data pin
+#define DHTTYPE DHT11 //using DHT11 sensor
 
 DHT dht(DHTPIN, DHTTYPE);
 
+//MQTT setup
+const char* mqtt_server = "192.168.1.22"; //ip
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+// MQTT reconnect function
+void reconnect() {
+  //loop until connected
+  while (!client.connected()) {
+    Serial.print("Connecting to MQTT...");
+
+    //attempt to connect
+    if (client.connect("ESP32Client")) {
+      Serial.println("connected");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      delay(2000);
+    }
+  }
+}
+
+// set up
 void setup() {
   Serial.begin(115200);
 
-// start sensor
-dht.begin();
-
-//connect wifi
+ //connect wifi
   WiFi.begin(ssid, password);
 
   Serial.print("Connecting to WiFi");
@@ -31,22 +53,43 @@ dht.begin();
   Serial.println("\nConnected!");
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
+
+  // start sensor
+ dht.begin();
+
+  // mqtt set up
+ client.setServer(mqtt_server, 1883);
+
 }
 
 void loop() {
-  float temp = dht.readTemperature();
-  float hum = dht.readHumidity();
+  //ensure mqtt connection
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
+
+  //read sensor data
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
 
   // check if reading failed
-  if (isnan(temp) || isnan(hum)) {
+  if (isnan(temperature) || isnan(humidity)) {
     Serial.println("Failed to read from DHT sensor!");
+    delay(2000);
     return;
   }
 
-  Serial.print("Temperature: ");
-  Serial.print(temp);
-  Serial.print(" °C | Humidity: ");
-  Serial.println(hum);
+ // CREATE JSON PAYLOAD
+  String payload = String("{\"temperature\":") + temperature + ",\"humidity\":" + humidity + "}";
 
-  delay(2000);  // DHT11 needs delay
+  // PUBLISH TO MQTT
+  client.publish("iot/sensor", payload.c_str());
+
+  // PRINT TO SERIAL
+  Serial.print("Published: ");
+  Serial.println(payload);
+
+  //wait
+  delay(5000);  // DHT11 needs delay
 }
