@@ -5,6 +5,9 @@ This project is a real-time IoT monitoring system using ESP32, DHT11 sensor, and
 
 It collects environmental data (temperature & humidity) and transmits it over a network using MQTT, stores it, and visualizes it in real-time.
 
+## Dashboard Preview: Real-time visualization of temperature and humidity data:
+![IoT Dashboard](assets/dashboard.png)
+
 ---
 ## Features
 - ESP32 WiFi connectivity
@@ -134,10 +137,10 @@ http://localhost:8501
 - Debugging networking & system issues
 
 ## Next Steps
-- Database integration (SQLite / MongoDB)
-- Cloud deployment (AWS IoT / Azure IoT)
 - Alert system (threshold-based notifications)
 - AI-based anomaly detection
+- Database integration
+- Cloud deployment
 - Mobile/web app integration
 
 ### Author
