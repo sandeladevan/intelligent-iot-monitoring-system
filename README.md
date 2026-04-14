@@ -3,10 +3,17 @@
 ## Overview
 This project is a real-time IoT monitoring system using ESP32, DHT11 sensor, and MQTT protocol, Python backend, and a live dashboard.
 
-It collects environmental data (temperature & humidity) and transmits it over a network using MQTT, stores it, and visualizes it in real-time.
+It collects environmental data (temperature & humidity), transmits it via MQTT, processes it in a backend service, detects anomalies, and visualizes it in real-time.
+
 
 ## Dashboard Preview: Real-time visualization of temperature and humidity data:
-![IoT Dashboard](assets/dashboard.png)
+<img src="assets/dashboard.png" width="800"/>
+
+## Anomaly Detection Output
+
+Real-time anomaly detection using backend logic:
+
+<img src="assets/anomaly_output.png" width="800"/>
 
 ---
 ## Features
@@ -17,6 +24,7 @@ It collects environmental data (temperature & humidity) and transmits it over a 
 - Python backend for data ingestion
 - CSV-based data storage
 - Live dashboard using Streamlit
+- Real-time anomaly detection (AI logic)
 - JSON data pipeline
 - Modular and scalable architecture
 
@@ -67,6 +75,23 @@ Streamlit Dashboard (Live Visualization)
 - secrets.h excluded using .gitignore
 - Prevents exposure of sensitive data on GitHub
 
+## AI / Smart Logic
+
+ The system includes real-time anomaly detection:
+  - Detects abnormal temperature/humidity values
+  - Generates alerts when values exceed normal range
+
+## Testing Approach
+
+Anomaly detection was validated using controlled testing:
+- External heat sources (e.g., lighter) were used to simulate high temperature conditions
+- Environmental variations were introduced to test humidity thresholds
+- This ensured the system correctly detects and flags abnormal readings in real-time
+
+Example output:
+
+ALERT: Temperature anomaly detected: 45.8 °C | ALERT: Humidity anomaly detected: 99.0 %
+
 ## Progress
 - WiFi connection established (ESP32)
 - Sensor data acquisition (DHT11)
@@ -75,6 +100,7 @@ Streamlit Dashboard (Live Visualization)
 - Python backend subscriber implemented
 - Data stored in CSV file
 - Real-time dashboard using Streamlit
+- Anomaly detection implemented and tested
 
 ## How to Run
 ### 1. Clone Repository
@@ -133,13 +159,14 @@ http://localhost:8501
 - Embedded systems (ESP32 + sensors)
 - Backend development (Python subscriber)
 - Data handling & storage
-- Real-time visualization
+- Real-time visualization with streamlit
 - Debugging networking & system issues
+- AI-based anomaly detection
 
 ## Next Steps
-- Alert system (threshold-based notifications)
-- AI-based anomaly detection
+- Machine Learning-based anomaly detection
 - Database integration
+- Alert system (Email/Telegram)
 - Cloud deployment
 - Mobile/web app integration
 
