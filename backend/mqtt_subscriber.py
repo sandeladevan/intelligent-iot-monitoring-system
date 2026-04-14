@@ -22,6 +22,20 @@ def on_message(client, userdata, msg):
         temperature = data.get("temperature")
         humidity = data.get("humidity")
 
+        # Defined normal ranges
+        TEMP_MIN = 18
+        TEMP_MAX = 30
+        HUM_MIN = 30
+        HUM_MAX = 70
+
+        # Checks anomalies
+        if temperature is not None and humidity is not None:
+            if temperature < TEMP_MIN or temperature > TEMP_MAX:
+                print(f" ALERT: Temperature anomaly detected: {temperature} °C")
+
+            if humidity < HUM_MIN or humidity > HUM_MAX:
+                print(f" ALERT: Humidity anomaly detected: {humidity} %")
+
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # Save to CSV
