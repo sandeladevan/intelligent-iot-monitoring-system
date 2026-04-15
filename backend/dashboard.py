@@ -2,47 +2,42 @@ import streamlit as st
 import pandas as pd
 import psycopg2
 import time
+import requests
 
 st.set_page_config(page_title="IoT Dashboard", layout="wide")
 
 st.title(" IoT Monitoring Dashboard")
 
-# Connect to PostgreSQL
-conn = psycopg2.connect(
-    host="localhost",
-    database="iot_db",
-    user="postgres",
-    password="1234"
-)
-
 # Auto-refresh
 placeholder = st.empty()
+  
+st.subheader("Live Sensor Data")
 
-while True:
-    try:
-        # Read data from PostgreSQL
-        query = "SELECT * FROM sensor_data ORDER BY timestamp DESC LIMIT 50;"
-        df = pd.read_sql(query, conn)
+# API URL
+API_URL = "http://127.0.0.1:8000/data"
 
-        # Reverse order for proper plotting
-        df = df.sort_values(by="timestamp")
+# Fetch data from API
+response = requests.get(API_URL)
 
-        with placeholder.container():
-            st.subheader("Live Sensor Data")
-            
-            # Show latest values
-            if not df.empty:
-                latest = df.iloc[-1]
-                st.metric("Temperature (°C)", round(latest["temperature"], 2))
-                st.metric("Humidity (%)", round(latest["humidity"], 2))
-                
-            # graph
-            st.line_chart(df[["temperature", "humidity"]])
-            
-            #table
-            st.dataframe(df.tail(10))
+if response.status_code == 200:
+    data = response.json()
 
-    except Exception as e:
-        st.error(f"Error: {e}")
+    df = pd.DataFrame(data)
 
-    time.sleep(2)
+    # Convert timestamp
+    df["timestamp"] = pd.to_datetime(df["timestamp"])
+
+    # Show latest values
+    latest = df.iloc[0]
+
+    st.metric("Temperature (°C)", latest["temperature"])
+    st.metric("Humidity (%)", latest["humidity"])
+
+    # Plot graph
+    st.line_chart(df.set_index("timestamp")[["temperature", "humidity"]])
+
+    # Show table
+    st.dataframe(df)
+
+else:
+    st.error("Failed to fetch data from API")

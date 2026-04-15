@@ -6,16 +6,21 @@ This project is a real-time IoT monitoring system using:
 - MQTT protocol (communication)
 - Python backend (processing)
 - PostgreSQL (storage)
+- FastAPI (REST API)
 - Streamlit (visualization)
 
-It captures temperature & humidity data, processes it, detects anomalies, stores it in a database, and visualizes it live.
+It captures temperature & humidity data, processes it, detects anomalies, stores it in a database, exposes it via APIs and visualizes it in real-time.
 
 
 ## Dashboard Preview: Real-time visualization of temperature and humidity data:
 <p>
   <img src="assets/dashboard1.png" width="400" height="250" style="margin-right:10px;" />
-  <img src="assets/dashboard2.png" width="400" height="250" />
+  <img src="assets/dashboard3.png" width="400" height="250" />
 </p>
+
+## FastAPI Response (Live Data API)
+#### API Endpoint Output (/data)
+ <img src="assets/FastAPI1.png" width="400" height="250" />
 
 ## Database Preview (PostgreSQL)
 <img src="assets/postgresql.png" width="400" height="250" />
@@ -34,6 +39,7 @@ Real-time anomaly detection using backend logic:
 - MQTT-based communication (publish/subscribe)
 - Python backend for data ingestion
 - PostgreSQL database integration
+- REST API using FastAPI
 - Live dashboard using Streamlit
 - Real-time anomaly detection (AI logic)
 - JSON data pipeline
@@ -53,6 +59,8 @@ Python Backend (Subscriber)
 ↓
 PostgreSQL Database
 ↓
+FastAPI (REST API)
+↓
 Streamlit Dashboard (Live Visualization)
 ```
 
@@ -69,6 +77,7 @@ Streamlit Dashboard (Live Visualization)
 - DHT Sensor Library
 - paho-mqtt (Python)
 - PostgreSQL
+- FastAPI
 - psycopg2
 - Streamlit (Dashboard)
 - Pandas (Data processing)
@@ -115,7 +124,9 @@ ALERT: Humidity anomaly detected: 99.0 %
 - MQTT local broker setup (Mosquitto)
 - ESP32 publishing data via MQTT
 - Python backend subscriber implemented
-- Data stored in CSV file to PostgreSQL
+- Data stored in PostgreSQL
+- FastAPI backend developed
+- REST APIs for IoT data (/data, /latest)
 - Real-time dashboard using Streamlit
 - Anomaly detection implemented and tested
 
@@ -165,6 +176,16 @@ SELECT * FROM sensor_data;
 cd backend
 python mqtt_subscriber.py
 ```
+
+### 7. Run FastAPI Server
+```
+uvicorn api:app --reload
+```
+Open:
+```
+http://127.0.0.1:8000/docs
+```
+
 ### 7. Run Dashboard
 ```
 streamlit run dashboard.py
@@ -188,6 +209,7 @@ http://localhost:8501
 - Live sensor data streaming
 - Real-time dashboard updates
 - Data stored in PostgreSQL
+- API endpoints serving data
 - Alerts triggered on anomalies
 
 ## Key Learnings
@@ -196,16 +218,15 @@ http://localhost:8501
 - Embedded systems (ESP32 + sensors)
 - Backend development (Python subscriber)
 - Database integration (PostgreSQL)
+- Backend API development (FastAPI)
 - Real-time visualization with streamlit
 - Debugging networking & system issues
 - AI-based anomaly detection
 - Handling production-style architecture
 
 ## Next Steps
-- Alert system (Email/Telegram)
-- Cloud deployment
-- REST API layer
-- Docker containerization
+- Dockerize entire system
+- Deploy to cloud
 
 ### Author
 Devan Sandela
