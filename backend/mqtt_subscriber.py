@@ -1,9 +1,20 @@
 import paho.mqtt.client as mqtt
 import json
 from datetime import datetime
+import psycopg2
+
+# Connect to PostgreSQL
+conn = psycopg2.connect(
+    host="localhost",
+    database="iot_db",
+    user="postgres",
+    password="1234"
+)
+
+cursor = conn.cursor()
 
 # MQTT config
-BROKER = "192.168.1.22"   # your laptop IP
+BROKER = "192.168.1.22"   # laptop IP
 PORT = 1883
 TOPIC = "iot/sensor"
 
@@ -26,7 +37,7 @@ def on_message(client, userdata, msg):
         TEMP_MIN = 18
         TEMP_MAX = 30
         HUM_MIN = 30
-        HUM_MAX = 70
+        HUM_MAX = 80
 
         # Checks anomalies
         if temperature is not None and humidity is not None:
@@ -38,9 +49,12 @@ def on_message(client, userdata, msg):
 
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # Save to CSV
-        with open("data.csv", "a") as f:
-            f.write(f"{timestamp},{temperature},{humidity}\n")
+        
+        cursor.execute(
+            "INSERT INTO sensor_data (temperature, humidity) VALUES (%s, %s)",
+            (temperature, humidity)
+        )
+        conn.commit()
 
     except Exception as e:
         print("Error:", e)
