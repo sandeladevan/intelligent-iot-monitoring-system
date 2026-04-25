@@ -150,7 +150,7 @@ Credentials stored in secrets.h
 - Debugging distributed systems
 
 ### Future Improvements
-Cloud deployment (AWS / Render)
+Cloud deployment   
 Authentication
 
 ### Author
