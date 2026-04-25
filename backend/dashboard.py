@@ -26,7 +26,7 @@ if response.status_code == 200:
 
     # Convert timestamp
     df["timestamp"] = pd.to_datetime(df["timestamp"])
-
+    df["timestamp"] = df["timestamp"].dt.tz_localize("UTC").dt.tz_convert("Europe/Dublin")
     # Show latest values
     latest = df.iloc[0]
 

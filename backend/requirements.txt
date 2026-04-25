@@ -1,0 +1,7 @@
+paho-mqtt
+psycopg2-binary
+fastapi
+uvicorn
+pandas
+streamlit
+requests

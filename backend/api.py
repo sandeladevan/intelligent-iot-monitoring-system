@@ -3,15 +3,17 @@ import psycopg2
 
 app = FastAPI()
 
-# DB connection
 def get_connection():
-    return psycopg2.connect(
-        dbname="iot_db",
-        user="postgres",
-        password="1234",
-        host="localhost",
-        port="5432"
-    )
+    while True:
+        try:
+            return psycopg2.connect(
+                host="db",
+                database="iot_data",
+                user="postgres",
+                password="1234"
+            )
+        except:
+            time.sleep(2)
 
 # Get latest data
 @app.get("/latest")

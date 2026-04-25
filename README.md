@@ -1,59 +1,22 @@
 # Intelligent-IoT-Monitoring-System
 
 ## Overview
-This project is a real-time IoT monitoring system using:
-- ESP32, DHT11 sensor (data collection)
-- MQTT protocol (communication)
-- Python backend (processing)
-- PostgreSQL (storage)
-- FastAPI (REST API)
-- Streamlit (visualization)
+End-to-end real-time IoT system integrating embedded hardware, backend processing, APIs, anomaly detection, and containerized deployment
 
-It captures temperature & humidity data, processes it, detects anomalies, stores it in a database, exposes it via APIs and visualizes it in real-time.
-
-
-## Dashboard Preview: Real-time visualization of temperature and humidity data:
-<p>
-  <img src="assets/dashboard1.png" width="400" height="250" style="margin-right:10px;" />
-  <img src="assets/dashboard3.png" width="400" height="250" />
-</p>
-
-## FastAPI Response (Live Data API)
-#### API Endpoint Output (/data)
- <img src="assets/FastAPI1.png" width="400" height="250" />
-
-## Database Preview (PostgreSQL)
-<img src="assets/postgresql.png" width="400" height="250" />
-
-## Anomaly Detection Output
-
-Real-time anomaly detection using backend logic:
-
-<img src="assets/anomaly_output.png" width="400" height="250"/>
-
----
-## Features
-- ESP32 WiFi connectivity
-- Secure credential handling using `secrets.h`
-- Real-time temperature & humidity monitoring
-- MQTT-based communication (publish/subscribe)
-- Python backend for data ingestion
-- PostgreSQL database integration
-- REST API using FastAPI
-- Live dashboard using Streamlit
-- Real-time anomaly detection (AI logic)
-- JSON data pipeline
-- Modular and scalable architecture
-
----
+## What This Project Demonstrates
+- Embedded Systems (ESP32 + DHT11)
+- Real-time communication using MQTT
+- Backend data processing + anomaly detection
+- Database integration (PostgreSQL)
+- REST API (FastAPI)
+- Live visualization (Streamlit)
+- Full system containerization (Docker)
 
 ## System Architecture
 ```
-DHT11 Sensor
+ESP32 + DHT11
 ↓
-ESP32 (Firmware)
-↓ WiFi
-MQTT Broker (Mosquitto)
+MQTT Broker 
 ↓
 Python Backend (Subscriber)
 ↓
@@ -61,172 +24,134 @@ PostgreSQL Database
 ↓
 FastAPI (REST API)
 ↓
-Streamlit Dashboard (Live Visualization)
+Streamlit Dashboard
 ```
 
-## Hardware Used
-- ESP32 Dev Module
-- DHT11 Temperature & Humidity Sensor
-- Breadboard & Jumper Wires
+## Dashboard : Real-time visualization
+<p>
+  <img src="assets/dashboard1.png" width="400" height="250" style="margin-right:10px;" />
+  <img src="assets/dashboard4.png" width="400" height="250" />
+</p>
 
-## Software Used
-- Arduino IDE
-- Python 3
-- MQTT (Mosquitto Broker)
-- PubSubClient Library (ESP32)
-- DHT Sensor Library
-- paho-mqtt (Python)
-- PostgreSQL
-- FastAPI
-- psycopg2
-- Streamlit (Dashboard)
-- Pandas (Data processing)
-- Git & GitHub
+- Live temperature & humidity monitoring
+- Historical trend visualization
+- Tabular data view
 
+## API (FastAPI)
+#### API Endpoint Output (/data)
+ <img src="assets/FastAPI1.png" width="400" height="250" />
 
-## MQTT Configuration
-- Broker: Local Mosquitto
-- Port: 1883
-- Topic: `iot/sensor`
+Endpoints:
+- GET /data → Full dataset
+- GET /latest → Latest reading
 
-## Sample Data
+JSON-based real-time data access,  
+Interactive Swagger UI
 
-```json
-{"temp":19.5,"hum":64}
+## Docker Deployment (Production-Style)
+<p>
+  <img src="assets/docker.png" width="400" height="250" style="margin-right:10px;" />
+</p>
+
+Services:
+
+mqtt_broker → Mosquitto  
+postgres_db → PostgreSQL  
+backend_service → API + Dashboard + Subscriber
+
+Run everything:
 ```
-## Security
-- WiFi credentials stored in secrets.h
-- secrets.h excluded using .gitignore
-- Prevents exposure of sensitive data on GitHub
+docker-compose up --build
+```
 
-## AI / Smart Logic
+## Anomaly Detection
 
- The system includes real-time anomaly detection:
-  - Detects abnormal temperature/humidity values
-  - Generates alerts when values exceed normal range
+<img src="assets/anomaly_output.png" width="400" height="250"/>
 
-## Testing Approach
+- Detects abnormal values in real-time
+- Uses threshold-based logic
+```
+TEMP_MIN = 18°C
+TEMP_MAX = 30°C
+HUM_MIN = 30%
+HUM_MAX = 70%
+```
+Example:
 
-Anomaly detection was validated using controlled testing:
-- External heat sources (e.g., lighter) were used to simulate high temperature conditions
-- Environmental variations were introduced to test humidity thresholds
-- This ensured the system correctly detects and flags abnormal readings in real-time
-
-Example output:
 ```
 ALERT: Temperature anomaly detected: 45.8 °C  
 ALERT: Humidity anomaly detected: 99.0 %
 ```
 
-## Progress
-- WiFi connection established (ESP32)
-- Sensor data acquisition (DHT11)
-- MQTT local broker setup (Mosquitto)
-- ESP32 publishing data via MQTT
-- Python backend subscriber implemented
-- Data stored in PostgreSQL
-- FastAPI backend developed
-- REST APIs for IoT data (/data, /latest)
-- Real-time dashboard using Streamlit
-- Anomaly detection implemented and tested
+## Tech Stack
+### Hardware
+ESP32  
+DHT11 Sensor
+### Arduino IDE
+PubSubClient  MQTTLibrary (ESP32)  
+DHT Sensor Library
+### Backend
+Python  
+paho-mqtt  
+psycopg2
+### API & Visualization
+FastAPI  
+Streamlit  
+Pandas  
+### Database
+PostgreSQL
+### DevOps
+Docker  
+Docker Compose  
+Mosquitto  
 
-## How to Run
-### 1. Clone Repository
+
+## Quick Start
+### 1. Clone Repo
 
 ```
 git clone https://github.com/sandeladevan/intelligent-iot-monitoring-system.git
 cd intelligent-iot-monitoring-system
 ```
-### 2. Install Requirements (Python Backend)
+### 2. Run System (Docker)
 
 ```
-pip install paho-mqtt streamlit pandas psycopg2-binary
+docker-compose up --build
 ```
 
-### 3. Install MQTT Broker (Mosquitto)
+### 3. Access
+- Dashboard -> http://localhost:8501
+- APIs Docs -> http://localhost:8501/docs
 
-Download and install:
+### Manual Setup (Without Docker)
+1. Install dependencies
+2. Start Mosquitto
+3. Setup PostgreSQL
+4. Run backend
+5. Run API
+6. Run dashboard
 
-```
-https://mosquitto.org/download/
-```
+### Security
+Credentials stored in secrets.h  
+.gitignore prevents leaks
 
-### 4. Start MQTT Broker
- 
-```
-mosquitto -v
-```
-### 5. Setup PostgreSQL
-- Create database:
-```
-CREATE DATABASE iot_db;
-```
-- create table:
-```
-CREATE TABLE sensor_data (id SERIAL PRIMARY KEY, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, temperature FLOAT, humidity FLOAT);
+### Testing & Validation
+- Simulated high temperature using heat source
+- Tested humidity variations
+- Verified anomaly detection triggers
 
-insert into sensor_data (temperature, humidity) values (25.5, 60.0);
+### Key Learnings
+- IoT system design (end-to-end)
+- MQTT protocol (pub/sub architecture)
+- Backend API development
+- Database integration
+- Real-time data visualization
+- Docker containerization
+- Debugging distributed systems
 
-SELECT * FROM sensor_data;
-
-```
-### 6. Run Backend Subscriber
-
-```
-cd backend
-python mqtt_subscriber.py
-```
-
-### 7. Run FastAPI Server
-```
-uvicorn api:app --reload
-```
-Open:
-```
-http://127.0.0.1:8000/docs
-```
-
-### 7. Run Dashboard
-```
-streamlit run dashboard.py
-```
-Open in browser:
-```
-http://localhost:8501
-```
-
-### 8. Setup ESP32 Firmware
-- Open Arduino IDE
-- Install libraries: DHT sensor library (Adafruit), PubSubClient (Nick O’Leary)
-- Update: WiFi credentials in secrets.h, MQTT server IP (laptop IP)
-
-### 9. Upload Code to ESP32
-- Select board: ESP32 Dev Module
-- Upload code
-- Open Serial Monitor (115200 baud)
-
-### 10. Output
-- Live sensor data streaming
-- Real-time dashboard updates
-- Data stored in PostgreSQL
-- API endpoints serving data
-- Alerts triggered on anomalies
-
-## Key Learnings
-- IoT system design (end-to-end pipeline)
-- MQTT protocol (publish/subscribe model)
-- Embedded systems (ESP32 + sensors)
-- Backend development (Python subscriber)
-- Database integration (PostgreSQL)
-- Backend API development (FastAPI)
-- Real-time visualization with streamlit
-- Debugging networking & system issues
-- AI-based anomaly detection
-- Handling production-style architecture
-
-## Next Steps
-- Dockerize entire system
-- Deploy to cloud
+### Future Improvements
+Cloud deployment (AWS / Render)
+Authentication
 
 ### Author
 Devan Sandela

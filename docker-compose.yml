@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: iot_data
+    ports:
+      - "5432:5432"
+
+  mqtt:
+    image: eclipse-mosquitto
+    container_name: mqtt_broker
+    restart: always
+    ports:
+      - "1883:1883"
+
+  backend:
+    build: ./backend
+    container_name: backend_service
+    restart: always
+    depends_on:
+      - db
+      - mqtt
+    ports:
+      - "8000:8000"   # FastAPI
+      - "8501:8501"   # Streamlit

@@ -2,19 +2,39 @@ import paho.mqtt.client as mqtt
 import json
 from datetime import datetime
 import psycopg2
+import time
 
 # Connect to PostgreSQL
-conn = psycopg2.connect(
-    host="localhost",
-    database="iot_db",
-    user="postgres",
-    password="1234"
-)
+def connect_db():
+    while True:
+        try:
+            conn = psycopg2.connect(
+                host="db",
+                database="iot_data",
+                user="postgres",
+                password="1234"
+            )
+            print("Connected to DB")
+            return conn
+        except Exception as e:
+            print("DB not ready, retrying...")
+            time.sleep(3)
 
+conn = connect_db()
 cursor = conn.cursor()
 
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS sensor_data (
+    id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    temperature FLOAT,
+    humidity FLOAT
+)
+""")
+conn.commit()
+
 # MQTT config
-BROKER = "192.168.1.22"   # laptop IP
+BROKER = "mqtt"   # laptop IP
 PORT = 1883
 TOPIC = "iot/sensor"
 
